@@ -15,6 +15,19 @@ def get_index_template():
     return env.get_template('template.html')
 
 
+def on_reload(paged_books, pages_amount):
+        for page_num, page_books in enumerate(paged_books, 1):
+            books_pairs = list(chunked(page_books, 2))
+            rendered_page = get_index_template().render(
+                books_pairs = books_pairs,
+                pages_amount = pages_amount,
+                current_page_num = page_num,
+            )
+            with open(f'pages/index{page_num}.html', 'w', encoding='utf8') as file:
+                file.write(rendered_page)
+        print('Site rebuilt')
+
+
 def main():
     with open('./parsing_result/books.json', 'r', encoding='utf8') as file:
         books = json.load(file)
@@ -28,18 +41,7 @@ def main():
     pages_amount = range(1, len(paged_books)+1)
     Path('pages').mkdir(parents=True, exist_ok=True)
     
-    def on_reload():
-        for page_num, page_books in enumerate(paged_books, 1):
-            books_pairs = list(chunked(page_books, 2))
-            rendered_page = get_index_template().render(
-                books_pairs = books_pairs,
-                pages_amount = pages_amount,
-                current_page_num = page_num,
-            )
-            with open(f'pages/index{page_num}.html', 'w', encoding='utf8') as file:
-                file.write(rendered_page)
-        print('Site rebuilt')
-    on_reload()
+    on_reload(paged_books, pages_amount)
     server = Server()
     server.watch('template.html', on_reload)
     server.serve(root='.')
