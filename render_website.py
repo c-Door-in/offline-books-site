@@ -1,4 +1,5 @@
 import json
+from functools import partial
 from pathlib import Path
 from urllib.parse import quote
 
@@ -41,9 +42,12 @@ def main():
     pages_amount = range(1, len(paged_books)+1)
     Path('pages').mkdir(parents=True, exist_ok=True)
     
-    on_reload(paged_books, pages_amount)
+    on_reload_books_pages = partial(on_reload,
+                                    paged_books=paged_books,
+                                    pages_amount=pages_amount)
+    on_reload_books_pages()
     server = Server()
-    server.watch('template.html', on_reload)
+    server.watch('template.html', on_reload_books_pages)
     server.serve(root='.')
 
 
