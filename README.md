@@ -46,5 +46,5 @@
   с помощью парсера ['online-books-parser'](https://github.com/c-Door-in/online-books-parser).
 
 ### Цель проекта
-  Проект написан в учебных целях на курсах [Devman](https://dvmn.org/)
+  Проект написан по заказу портала [Devman](https://dvmn.org/)
  
